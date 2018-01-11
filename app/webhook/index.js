@@ -1,17 +1,20 @@
-const { spawn } = require('child_process');
-const ls = spawn('ls', ['-la']);
+'use strict';
 
 
+import express    from 'express';
+import http       from 'http';
+import execa      from 'execa';
 
+import { Server } from './server.js';
 
-// ls.stdout.on('data', (data) => {
-//   console.log(`stdout: ${data}`);
-// });
-//
-// ls.stderr.on('data', (data) => {
-//   console.log(`stderr: ${data}`);
-// });
-//
-// ls.on('close', (code) => {
-//   console.log(`child process exited with code ${code}`);
-// });
+module.exports = (default_settings) => {
+
+  return {
+    server: (opts) => {
+      //TODO: validate if opts.port exist
+      let app = express();
+      let serverApp = new Server({ default_settings, app, opts, http, execa });
+      return serverApp;
+    }
+  };
+};

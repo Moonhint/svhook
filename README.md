@@ -1,31 +1,24 @@
-Can bootstrap express server with port
 
+Sample usage:
 
-automatic serve webhook by array of object
-
+```bash
 svhook
-  .server({ port: 2000, https_creds })
+  .server({ port: 2000 })
   .hook({
     materials: [
       {
-        webhook_name: webhook_name,
-        webhook_url: webhook_url,
-        bash_script: [
-
+        webhook_name: "ls",
+        webhook_url: "ls",
+        bash_scripts: [
+          "ls"
         ]
       },
       {
-        webhook_name: webhook_name,
-        webhook_url: webhook_url,
-        bash_script: [
-
-        ]         
-      },
-      {
-        webhook_name: webhook_name,
-        webhook_url: webhook_url,
-        bash_script: [
-
+        webhook_name: "pwdls",
+        webhook_url: "pwdls",
+        bash_scripts: [
+          "pwd",
+          "ls -la",
         ]
       }
     ],
@@ -33,3 +26,8 @@ svhook
 
     }
   });
+```
+
+post something to:
+- http://localhost:2000/svhook/ls
+- http://localhost:2000/svhook/pwdls

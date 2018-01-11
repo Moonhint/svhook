@@ -1,18 +1,19 @@
 {
   "name": "svhook",
   "version": "1.0.0",
-  "description": "simple server webhook that run bash script on local machine",
+  "description": "simple server webhook that run shell script on the machine",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --inspect=localhost:9998 ./index.js --ignore 'dist/*' --exec \"npm run build && node -r babel-register\"",
+    "dev": "nodemon --inspect=localhost:6868 ./index.js --ignore 'dist/*' --exec \"npm run build && node -r babel-register\"",
     "clean": "rimraf dist",
     "build": "npm run clean && mkdir -p dist && babel app -s -D -d dist",
     "test": "NODE_ENV=test mocha --inspect=localhost:9999 --timeout 15000 --require babel-register ./tests/*.*.spec.js ./tests/*/*.*.spec.js --watch",
-    "simulate": "node ./simulation/index.js"
+    "simulate": "npm run build && node --inspect=localhost:6868 ./simulation/index.js --require babel-register"
   },
   "author": "Antoni <email.to.antoni@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "execa": "^0.8.0",
     "express": "^4.16.2"
   },
   "devDependencies": {
@@ -52,11 +53,12 @@
     "url": "git+https://github.com/Moonhint/amqphelp.git"
   },
   "keywords": [
-    "messaging",
-    "helper",
+    "webhook",
+    "server",
     "implementation",
-    "amqp",
-    "amqplib"
+    "shell",
+    "script",
+    "runner"
   ],
   "bugs": {
     "url": "https://github.com/Moonhint/amqphelp.git"
