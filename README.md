@@ -2,6 +2,9 @@
 Sample usage:
 
 ```bash
+
+const svhook = require('svhook');
+
 svhook
   .server({ port: 2000 })
   .hook({
