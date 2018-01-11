@@ -1,0 +1,65 @@
+{
+  "name": "svhook",
+  "version": "1.0.0",
+  "description": "simple server webhook that run bash script on local machine",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --inspect=localhost:9998 ./index.js --ignore 'dist/*' --exec \"npm run build && node -r babel-register\"",
+    "clean": "rimraf dist",
+    "build": "npm run clean && mkdir -p dist && babel app -s -D -d dist",
+    "test": "NODE_ENV=test mocha --inspect=localhost:9999 --timeout 15000 --require babel-register ./tests/*.*.spec.js ./tests/*/*.*.spec.js --watch",
+    "simulate": "node ./simulation/index.js"
+  },
+  "author": "Antoni <email.to.antoni@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "nodemon": "^1.11.0",
+    "mocha": "^3.5.3",
+    "chai": "^3.5.0",
+    "sinon": "^4.1.2",
+    "dotenv": "^4.0.0",
+    "istanbul": "^0.4.5",
+    "nyc": "^11.3.0",
+    "rimraf": "^2.6.2"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
+  },
+  "nyc": {
+    "include": "app",
+    "exclude": "**/*.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Moonhint/amqphelp.git"
+  },
+  "keywords": [
+    "messaging",
+    "helper",
+    "implementation",
+    "amqp",
+    "amqplib"
+  ],
+  "bugs": {
+    "url": "https://github.com/Moonhint/amqphelp.git"
+  },
+  "homepage": "https://github.com/Moonhint/amqphelp.git#readme"
+}
