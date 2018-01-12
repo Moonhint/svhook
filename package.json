@@ -1,6 +1,6 @@
 {
   "name": "svhook",
-  "version": "0.0.0",
+  "version": "1.0.1",
   "description": "simple server webhook that run shell script on the machine",
   "main": "index.js",
   "scripts": {
