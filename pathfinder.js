@@ -1,7 +1,6 @@
 'use strict';
 
 const path = require('path');
-const _ = require('lodash');
 
 module.exports = (() => {
   let root_path = __dirname;

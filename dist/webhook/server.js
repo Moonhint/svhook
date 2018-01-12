@@ -30,21 +30,11 @@ class Server {
     var _this = this;
 
     //init all routes
-    /*
-    material {
-      {
-        webhook_name: webhook_name,
-        webhook_url: webhook_url,
-        bash_scripts: []
-      }
-    }
-    */
-
     const materials = params.materials;
     const options = params.options;
 
     for (var i = 0; i < materials.length; i++) {
-      this.app.route(`/svhook/${materials[i]["webhook_url"]}`).get((() => {
+      this.app.route(`/svhook/${materials[i]["webhook_url"]}`).post((() => {
 
         let material = materials[i];
         let bash_scripts = material.bash_scripts;

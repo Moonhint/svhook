@@ -16,9 +16,6 @@ var _server = require('./server.js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import { MessagingAction }    from './action.helper';
-// import { MessagingUtil }      from './util.helpers';
-
 module.exports = default_settings => {
 
   return {
@@ -30,24 +27,4 @@ module.exports = default_settings => {
     }
   };
 };
-
-//
-// const { spawn } = require('child_process');
-// const ls = spawn('ls', ['-la']);
-//
-// ls.stdout.on('data', (data) => {
-//   console.log(`stdout: ${data}`);
-// });
-//
-// ls.stderr.on('data', (data) => {
-//   console.log(`stderr: ${data}`);
-// });
-//
-// ls.on('close', (code) => {
-//   console.log(`child process exited with code ${code}`);
-// });
-//# sourceMappingURL=index.js.map
-
-
-// import { spawn } from 'child_process';
 //# sourceMappingURL=index.js.map
