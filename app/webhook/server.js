@@ -39,16 +39,14 @@ export class Server {
 
           return async (req, res) => {
 
-            console.log(req.body);
-
-            res.send(`${material.webhook_name} ok`);
-
             let result;
 
             for (var i = 0; i < bash_scripts.length; i++) {
               result = await this.execa.shell(bash_scripts[i]);
               console.log(result.stdout);
             }
+
+            res.send(`${material.webhook_name} ok`);
 
           }
 
