@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -9,12 +9,15 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 class Server {
 
   // Depedency Injection:
-  constructor({ default_settings, app, opts, http, execa } = {}) {
+  constructor({ default_settings, app, body_parser, opts, http, execa } = {}) {
     // configuration default_settings
     this.default_settings = default_settings;
 
     // express app
     this.app = app;
+
+    // body parser helper
+    this.body_parser = body_parser;
 
     // server options
     this.opts = opts;
@@ -33,6 +36,10 @@ class Server {
     const materials = params.materials;
     const options = params.options;
 
+    //body parser middleware
+    this.app.use(this.body_parser.urlencoded({ extended: true, limit: '500mb' }));
+    this.app.use(this.body_parser.json({ limit: '500mb' }));
+
     for (var i = 0; i < materials.length; i++) {
       this.app.route(`/svhook/${materials[i]["webhook_url"]}`).post((() => {
 
@@ -42,14 +49,16 @@ class Server {
         return (() => {
           var _ref = _asyncToGenerator(function* (req, res) {
 
+            console.log(req.body);
+
+            res.send(`${material.webhook_name} ok`);
+
             let result;
 
             for (var i = 0; i < bash_scripts.length; i++) {
               result = yield _this.execa.shell(bash_scripts[i]);
               console.log(result.stdout);
             }
-
-            res.send(`${material.webhook_name} ok`);
           });
 
           return function (_x, _x2) {

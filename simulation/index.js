@@ -15,9 +15,7 @@ svhook
         webhook_name: "pwd",
         webhook_url: "pwd",
         bash_scripts: [
-          "pwd",
-          "ls -la",
-          "docker images"
+          "pwd"
         ]
       }
     ],
