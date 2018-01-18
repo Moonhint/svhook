@@ -39,6 +39,8 @@ export class Server {
 
           return async (req, res) => {
 
+            res.send(`${material.webhook_name} ok`);
+
             let result;
 
             for (var i = 0; i < bash_scripts.length; i++) {
@@ -49,8 +51,6 @@ export class Server {
                 console.error(e);
               }
             }
-
-            res.send(`${material.webhook_name} ok`);
 
           }
 
