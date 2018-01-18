@@ -42,8 +42,12 @@ export class Server {
             let result;
 
             for (var i = 0; i < bash_scripts.length; i++) {
-              result = await this.execa.shell(bash_scripts[i]);
-              console.log(result.stdout);
+              try {
+                result = await this.execa.shell(bash_scripts[i]);
+                console.log(result.stdout);
+              } catch (e) {
+                console.error(e);
+              }
             }
 
             res.send(`${material.webhook_name} ok`);
