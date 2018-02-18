@@ -1,7 +1,7 @@
 
 # SvHook
 
-Implementation of simple server for waiting web-hooks post and execute shell script accordingly.
+Implementation of simple server on waiting for web-hooks post and execute shell scripts accordingly.
 
 ## Simulation:
 
@@ -83,9 +83,9 @@ post something to:
 
 
 
-## Sample Usage [with With Lookup Execution]:
+## Sample Usage [with With Lookout Execution]:
 
-will check for script before executing, if there is another script with the same lookup key,
+will check for script before executing, if there is another script with the same lookout key,
 delay execution and only will execute last script after delay time passed.
 
 ```bash
@@ -119,7 +119,7 @@ svhook.server({ port: 2000 })
 ```
 
 Nb:
-- if option lookout_execution_delay is not provided, default lookup time will be 1 minute;
+- if option lookout_execution_delay is not provided, default lookout time will be 1 minute;
 - lookout_execution_delay is in millisecond
 
 post something to (post it several times):
