@@ -83,10 +83,10 @@ post something to:
 
 
 
-## Sample Usage [with With Lookout Execution]:
+## Sample Usage [with Lookout Execution]:
 
-will check for script before executing, if there is another script with the same lookout key,
-delay execution and only will execute last script after delay time passed.
+Will check for script before executing, if there is another script with the same lookout key,
+delay the execution and only will execute last script after delay time has passed.
 
 ```bash
 
