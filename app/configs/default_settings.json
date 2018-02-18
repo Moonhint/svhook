@@ -1,13 +1,52 @@
 {
-  "connection": {
-    "host": "localhost",
+  "server": {
+    "port": "2000"
+  },
+  "hook":{
+    "materials": [
+      {
+        "webhook_name": "ls",
+        "webhook_url": "ls",
+        "bash_scripts": [
+          "ls"
+        ]
+      },
+      {
+        "webhook_name": "pwd",
+        "webhook_url": "pwd",
+        "bash_scripts": [
+          "pwd"
+        ]
+      },
+      {
+        "webhook_name": "exports",
+        "webhook_url": "exports",
+        "bash_scripts": [
+          "echo $SVHOOK_ENV"
+        ]
+      },
+      {
+        "webhook_name": "deploy_1",
+        "webhook_url": "deploy_1",
+        "bash_scripts": [
+          "echo do something",
+          { "lookout": "deploy", "script": "echo run the same deploy script" }
+        ]
+      },
+      {
+        "webhook_name": "deploy_2",
+        "webhook_url": "deploy_2",
+        "bash_scripts": [
+          "echo do something",
+          { "lookout": "deploy", "script": "echo run the same deploy script" }
+        ]
+      }
+    ],
     "options": {
-        "name": "some-rabbit",
-        "cookie": "SWQOKODSQALRPCLNMEQG",
-        "user": "guest",
-        "pass": "guest",
-        "vhost": "/",
-        "reconnect": true
+      "env":{
+        "SVHOOK_ENV": "development"
+      },
+      "lookout_execution_delay": 60000
     }
   }
 }

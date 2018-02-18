@@ -14,7 +14,7 @@ describe("[ Pathfinder ]", function(){
   });
 
   it('should return to app path', ()=>{
-    expect(pathfinder.to_app()).to.equal(`${root_path}/dist/helpers`);
+    expect(pathfinder.to_app()).to.equal(`${root_path}/dist/webhook`);
   });
 
   it('should return to configs path', ()=>{
@@ -26,7 +26,7 @@ describe("[ Pathfinder ]", function(){
   });
 
   it('should return to simulation path', ()=>{
-    expect(pathfinder.to_app()).to.equal(`${root_path}/simulation`);
+    expect(pathfinder.to_simulation()).to.equal(`${root_path}/simulation`);
   });
 
 });

@@ -16,6 +16,9 @@ module.exports = (() => {
     },
     to_tests: () => {
       return `${root_path}/tests`;
+    },
+    to_simulation: () => {
+      return `${root_path}/simulation`;
     }
   };
 })();

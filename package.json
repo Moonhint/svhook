@@ -15,7 +15,8 @@
   "dependencies": {
     "body-parser": "https://registry.npmjs.org/body-parser/-/body-parser-1.18.2.tgz",
     "execa": "^0.8.0",
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "memory-cache": "^0.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

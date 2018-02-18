@@ -159,6 +159,11 @@
       "from": "media-typer@0.3.0",
       "resolved": "https://registry.npmjs.org/media-typer/-/media-typer-0.3.0.tgz"
     },
+    "memory-cache": {
+      "version": "0.2.0",
+      "from": "memory-cache@latest",
+      "resolved": "https://registry.npmjs.org/memory-cache/-/memory-cache-0.2.0.tgz"
+    },
     "merge-descriptors": {
       "version": "1.0.1",
       "from": "merge-descriptors@1.0.1",
