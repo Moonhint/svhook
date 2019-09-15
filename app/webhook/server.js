@@ -100,6 +100,11 @@ export class Server {
       )());
     }
 
+    // add home route
+    this.app.route('/').get((req, res)=>{
+      res.send(`svhook`);
+    });
+
     //up server
     let server = this.http.createServer(this.app);
 
