@@ -1,6 +1,8 @@
 {
   "server": {
-    "port": "2000"
+    "port": 2000,
+    "route_prefix": "svhook",
+    "print_req_body": false
   },
   "hook":{
     "materials": [
@@ -12,6 +14,7 @@
         ]
       },
       {
+        "only_branches": ["master", "staging"],
         "webhook_name": "pwd",
         "webhook_url": "pwd",
         "bash_scripts": [
@@ -29,7 +32,7 @@
         "webhook_name": "deploy_1",
         "webhook_url": "deploy_1",
         "bash_scripts": [
-          "echo do something",
+          "echo do something 1",
           { "lookout": "deploy", "script": "echo run the same deploy script" }
         ]
       },
@@ -37,7 +40,7 @@
         "webhook_name": "deploy_2",
         "webhook_url": "deploy_2",
         "bash_scripts": [
-          "echo do something",
+          "echo do something 2",
           { "lookout": "deploy", "script": "echo run the same deploy script" }
         ]
       }

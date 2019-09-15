@@ -53,6 +53,39 @@ post something to:
 - http://localhost:2000/svhook/pwdls
 
 
+## Sample Usage [with Only Eligible Branches to Exceute]:
+
+```bash
+
+const svhook = require('svhook');
+
+svhook.server({ port: 2000 })
+  .hook({
+    "materials": [
+      {
+        "only_branches": ["master", "staging"],
+        "webhook_name": "pwd",
+        "webhook_url": "pwd",
+        "bash_scripts": [
+          "pwd"
+        ]
+      }
+    ]
+  });
+```
+
+post something to:
+- http://localhost:2000/svhook/pwd
+- with body:
+
+```bash
+  {
+    "ref": "refs/head/master",
+    ...
+  }
+```
+
+
 ## Sample Usage [with ENV]:
 
 ```bash

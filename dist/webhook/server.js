@@ -3,9 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
 class Server {
 
   // Depedency Injection:
@@ -33,8 +30,6 @@ class Server {
   }
 
   hook(params) {
-    var _this = this;
-
     const configs = params || this.default_settings.hook;
 
     //init all routes
@@ -46,61 +41,63 @@ class Server {
     this.app.use(this.body_parser.json({ limit: '500mb' }));
 
     for (var i = 0; i < materials.length; i++) {
-      this.app.route(`/svhook/${materials[i]["webhook_url"]}`).post((() => {
+      this.app.route(`/${this.opts.route_prefix}/${materials[i]["webhook_url"]}`).post((() => {
 
         let material = materials[i];
         let bash_scripts = material.bash_scripts;
 
-        return (() => {
-          var _ref = _asyncToGenerator(function* (req, res) {
+        return async (req, res) => {
 
-            res.send(`${material.webhook_name} ok`);
+          if (this.opts.print_req_body) {
+            console.log(req.body);
+          }
 
-            let result;
+          res.send(`${material.webhook_name} ok`);
 
+          let ignore_execution = false;
+
+          let material_branches = material.only_branches;
+          let git_refs_arr = req.body.ref.split('/');
+          let source_branch = git_refs_arr[git_refs_arr.length - 1];
+
+          // check for eligible branches if specifed
+          if (material_branches !== undefined) {
+            let founded_branch_index = material_branches.indexOf(source_branch);
+            if (founded_branch_index === -1) {
+              // not found in eligible to execute branches, so will ignore execution
+              ignore_execution = true;
+              console.log(`<----- [Ignore Execute] reason: not eligible branch ------>`);
+            }
+          }
+
+          if (!ignore_execution) {
             for (var i = 0; i < bash_scripts.length; i++) {
               let curr_bash_script = bash_scripts[i];
 
               if (curr_bash_script.lookout) {
-                let last_lookout = _this.cache.get(curr_bash_script.lookout);
+                let last_lookout = this.cache.get(curr_bash_script.lookout);
                 let lookout_script = curr_bash_script.script;
 
                 if (last_lookout === null) {
-                  _this.cache.put(curr_bash_script.lookout, 1, options.lookout_execution_delay, (() => {
-                    var _ref2 = _asyncToGenerator(function* (key, value) {
-                      console.info(`Script of "${key}" was stacked ${value} times before execution!`);
-                      _this.print_and_execute(lookout_script, options.env);
-                    });
-
-                    return function (_x3, _x4) {
-                      return _ref2.apply(this, arguments);
-                    };
-                  })());
+                  this.cache.put(curr_bash_script.lookout, 1, options.lookout_execution_delay, async (key, value) => {
+                    console.info(`Script of "${key}" was stacked ${value} times before execution!`);
+                    this.print_and_execute(lookout_script, options.env);
+                  });
                 } else {
-                  _this.cache.del(curr_bash_script.lookout);
-                  _this.cache.put(curr_bash_script.lookout, last_lookout + 1, options.lookout_execution_delay, (() => {
-                    var _ref3 = _asyncToGenerator(function* (key, value) {
-                      console.info(`Script of "${key}" was stacked ${value} times before execution!`);
-                      _this.print_and_execute(lookout_script, options.env);
-                    });
-
-                    return function (_x5, _x6) {
-                      return _ref3.apply(this, arguments);
-                    };
-                  })());
+                  this.cache.del(curr_bash_script.lookout);
+                  this.cache.put(curr_bash_script.lookout, last_lookout + 1, options.lookout_execution_delay, async (key, value) => {
+                    console.info(`Script of "${key}" was stacked ${value} times before execution!`);
+                    this.print_and_execute(lookout_script, options.env);
+                  });
                 }
                 console.info(`\nLooking out for another script with key "${curr_bash_script.lookout}"`);
                 console.info(`If none is provided in ${(options.lookout_execution_delay / 60000).toFixed(2)} minutes I will execute the script...\n`);
               } else {
-                _this.print_and_execute(curr_bash_script, options.env);
+                this.print_and_execute(curr_bash_script, options.env);
               }
             }
-          });
-
-          return function (_x, _x2) {
-            return _ref.apply(this, arguments);
-          };
-        })();
+          }
+        };
       })());
     }
 
@@ -112,22 +109,18 @@ class Server {
     });
   }
 
-  print_and_execute(script, env) {
-    var _this2 = this;
+  async print_and_execute(script, env) {
 
-    return _asyncToGenerator(function* () {
+    let result;
 
-      let result;
-
-      try {
-        console.log(`<----- [Execute] ${script} ------>`);
-        result = yield _this2.execa.shell(script, { env });
-        console.log(`<----- [Execution Output] ${script} ------>\n`);
-        console.log(`${result.stdout}\n\n`);
-      } catch (e) {
-        console.error(e);
-      }
-    })();
+    try {
+      console.log(`<----- [Execute] ${script} ------>`);
+      result = await this.execa.shell(script, { env });
+      console.log(`<----- [Execution Output] ${script} ------>\n`);
+      console.log(`${result.stdout}\n\n`);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
 }exports.Server = Server;
