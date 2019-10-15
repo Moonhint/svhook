@@ -1,6 +1,6 @@
 {
   "name": "svhook",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "simple server webhook that run shell script on the machine",
   "main": "index.js",
   "scripts": {
@@ -16,20 +16,21 @@
     "body-parser": "https://registry.npmjs.org/body-parser/-/body-parser-1.18.2.tgz",
     "execa": "^0.8.0",
     "express": "^4.16.2",
-    "memory-cache": "^0.2.0"
+    "memory-cache": "^0.2.0",
+    "shelljs": "^0.8.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.0",
-    "nodemon": "^1.11.0",
-    "mocha": "^3.5.3",
     "chai": "^3.5.0",
-    "sinon": "^4.1.2",
     "dotenv": "^4.0.0",
     "istanbul": "^0.4.5",
+    "mocha": "^3.5.3",
+    "nodemon": "^1.11.0",
     "nyc": "^11.3.0",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "sinon": "^4.1.2"
   },
   "babel": {
     "presets": [

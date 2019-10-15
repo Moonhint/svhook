@@ -4,8 +4,7 @@ let svhook = require('./../index');
 svhook.server().hook();
 
 /* SIMULATION 2 */
-// svhook.server({ port: 2000 })
-//   .hook({
+// svhook.server({ port: 2000 }).hook({
 //     "materials": [
 //       {
 //         "webhook_name": "ls",
@@ -71,4 +70,29 @@ svhook.server().hook();
 //     "options": {
 //       "lookout_execution_delay": 5000
 //     }
+//   });
+
+
+/* SIMULATION 5 */
+// svhook.server({ port: 2000 }).hook({
+//     "materials": [
+//       {
+//         "webhook_name": "ls",
+//         "webhook_url": "ls",
+//         "bash_scripts": [
+//           "ls",
+//           "cd ../",
+//           "ls"
+//         ]
+//       },
+//       {
+//         "webhook_name": "pwdls",
+//         "webhook_url": "pwdls",
+//         "bash_scripts": [
+//           "pwd",
+//           "ls",
+//           "ls -lah"
+//         ]
+//       }
+//     ]
 //   });

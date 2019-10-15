@@ -6,6 +6,7 @@ import http         from 'http';
 import execa        from 'execa';
 import body_parser  from 'body-parser';
 import cache        from 'memory-cache';
+import shell        from 'shelljs';
 
 import { Server } from './server.js';
 
@@ -15,7 +16,7 @@ module.exports = (default_settings) => {
     server: (opts) => {
       //TODO: validate if opts.port exist
       let app = express();
-      let serverApp = new Server({ default_settings, app, body_parser, opts, http, execa, cache });
+      let serverApp = new Server({ default_settings, app, body_parser, opts, http, execa, cache, shell });
       return serverApp;
     }
   };

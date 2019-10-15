@@ -1,7 +1,7 @@
 export class Server {
 
   // Depedency Injection:
-  constructor({ default_settings, app, body_parser, opts, http, execa, cache } = {}) {
+  constructor({ default_settings, app, body_parser, opts, http, execa, cache, shell } = {}) {
     // configuration default_settings
     this.default_settings = default_settings;
 
@@ -22,21 +22,26 @@ export class Server {
 
     // memory cache
     this.cache = cache;
+
+    // shell
+    this.shell = shell;
   }
 
   hook(params) {
     const configs = params || this.default_settings.hook;
-
-    //init all routes
     const materials = configs.materials;
     const options = configs.options || this.default_settings.hook.options;
+
+    //init all server options fallback variable
+    const route_prefix = this.opts.route_prefix || this.default_settings.server.route_prefix;
+    const print_req_body = this.opts.print_req_body || this.default_settings.server.print_req_body;
 
     //body parser middleware
     this.app.use(this.body_parser.urlencoded({ extended: true , limit: '500mb'}));
     this.app.use(this.body_parser.json({limit: '500mb'}));
 
     for (var i = 0; i < materials.length; i++) {
-      this.app.route(`/${this.opts.route_prefix}/${materials[i]["webhook_url"]}`).post((
+      this.app.route(`/${route_prefix}/${materials[i]["webhook_url"]}`).post((
         () => {
 
           let material = materials[i];
@@ -44,7 +49,7 @@ export class Server {
 
           return async (req, res) => {
 
-            if (this.opts.print_req_body){
+            if (print_req_body){
               console.log(req.body);
             }
             
@@ -53,11 +58,12 @@ export class Server {
             let ignore_execution = false;
 
             let material_branches = material.only_branches;
-            let git_refs_arr = req.body.ref.split('/');
-            let source_branch = git_refs_arr[git_refs_arr.length - 1];
+            let body_ref = req.body.ref;
 
             // check for eligible branches if specifed
-            if (material_branches !== undefined){
+            if (material_branches !== undefined && body_ref !== undefined){
+              let git_refs_arr = body_ref.split('/');
+              let source_branch = git_refs_arr[git_refs_arr.length - 1];
               let founded_branch_index = material_branches.indexOf(source_branch)
               if (founded_branch_index === -1){
                 // not found in eligible to execute branches, so will ignore execution
@@ -117,14 +123,20 @@ export class Server {
   async print_and_execute(script, env){
 
     let result;
+    let current_directory = process.cwd();
 
-    try {
-      console.log(`<----- [Execute] ${script} ------>`);
-      result = await this.execa.shell(script, {env});
-      console.log(`<----- [Execution Output] ${script} ------>\n`);
-      console.log(`${result.stdout}\n\n`);
-    } catch (e) {
-      console.error(e);
+    if (script.startsWith('cd')){
+      let path = script.split(" ")[1];
+      this.shell.cd(`${current_directory}/${path}`);
+    }else{
+      try {
+        console.log(`<----- [Execute] ${script} ------>`);
+        result = await this.execa.shell(script, {env});
+        console.log(`<----- [Execution Output] ${script} ------>\n`);
+        console.log(`${result.stdout}\n\n`);
+      } catch (e) {
+        console.error(e);
+      }
     }
 
   }
