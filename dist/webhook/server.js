@@ -99,7 +99,7 @@ class Server {
                 console.info(`\nLooking out for another script with key "${curr_bash_script.lookout}"`);
                 console.info(`If none is provided in ${(options.lookout_execution_delay / 60000).toFixed(2)} minutes I will execute the script...\n`);
               } else {
-                this.print_and_execute(curr_bash_script, options.env);
+                await this.print_and_execute(curr_bash_script, options.env);
               }
             }
           }
@@ -127,6 +127,7 @@ class Server {
 
     if (script.startsWith('cd')) {
       let path = script.split(" ")[1];
+      console.log(`<----- [Change Directory to ${current_directory}/${path}] ${script} ------>`);
       this.shell.cd(`${current_directory}/${path}`);
     } else {
       try {
