@@ -30,6 +30,38 @@ class Server {
 
     // shell
     this.shell = shell;
+
+    // execution queue
+    this.execution_queue = [];
+
+    // svhook_dir saved for later usage
+    this.svhook_dir = process.cwd();
+
+    // start queue outlook
+    this.init_queue_outlook();
+  }
+
+  init_queue_outlook() {
+    let self = this;
+    console.log("\n<----- Init QUEUE OUTLOOK ----->\n");
+
+    setInterval(() => {
+      self.outlooking_for_queue();
+    }, 2000);
+  }
+
+  outlooking_for_queue() {
+    if (this.execution_queue.length > 0) {
+      let queue_item = this.execution_queue.shift();
+      let lock = this.cache.get(`lock-${queue_item.path}`);
+      if (lock) {
+        console.log(`\n<----- REQUEUE ${queue_item.path} again because it is still locked ----->\n`);
+        this.execution_queue.unshift(queue_item);
+      } else {
+        console.log(`\n<----- UNQUEUE ${queue_item.path} and executing ----->\n`);
+        this.run_instructions(queue_item.instructions, queue_item.path, queue_item.options);
+      }
+    }
   }
 
   hook(params) {
@@ -77,30 +109,15 @@ class Server {
           }
 
           if (!ignore_execution) {
-            for (var i = 0; i < bash_scripts.length; i++) {
-              let curr_bash_script = bash_scripts[i];
 
-              if (curr_bash_script.lookout) {
-                let last_lookout = this.cache.get(curr_bash_script.lookout);
-                let lookout_script = curr_bash_script.script;
-
-                if (last_lookout === null) {
-                  this.cache.put(curr_bash_script.lookout, 1, options.lookout_execution_delay, async (key, value) => {
-                    console.info(`Script of "${key}" was stacked ${value} times before execution!`);
-                    this.print_and_execute(lookout_script, options.env);
-                  });
-                } else {
-                  this.cache.del(curr_bash_script.lookout);
-                  this.cache.put(curr_bash_script.lookout, last_lookout + 1, options.lookout_execution_delay, async (key, value) => {
-                    console.info(`Script of "${key}" was stacked ${value} times before execution!`);
-                    this.print_and_execute(lookout_script, options.env);
-                  });
-                }
-                console.info(`\nLooking out for another script with key "${curr_bash_script.lookout}"`);
-                console.info(`If none is provided in ${(options.lookout_execution_delay / 60000).toFixed(2)} minutes I will execute the script...\n`);
-              } else {
-                await this.print_and_execute(curr_bash_script, options.env);
-              }
+            if (this.cache.get(`lock-${req.route.path}`)) {
+              this.execution_queue.push({
+                path: req.route.path,
+                instructions: bash_scripts,
+                options: options
+              });
+            } else {
+              this.run_instructions(bash_scripts, req.route.path, options);
             }
           }
         };
@@ -120,6 +137,49 @@ class Server {
     });
   }
 
+  async run_instructions(instuctions, path, options) {
+
+    this.cache.put(`lock-${path}`, true);
+    console.log(`\n<----- [Start Running Instruction] for: ${path} ------>\n`);
+
+    for (var i = 0; i < instuctions.length; i++) {
+      let curr_bash_script = instuctions[i];
+
+      await this.print_and_execute(curr_bash_script, options.env);
+
+      if (i === instuctions.length - 1) {
+        console.log(`\n<----- [Finish Running Instruction] for: ${path} ------>\n`);
+        this.cache.put(`lock-${path}`, false);
+
+        console.log(`\n<----- [Reset Directory] to: ${this.svhook_dir} ------>\n`);
+        this.shell.cd(this.svhook_dir);
+      }
+
+      // if (curr_bash_script.lookout){
+      //   // TODO: review lookout execution, for sync
+      //   let last_lookout = this.cache.get(curr_bash_script.lookout);
+      //   let lookout_script = curr_bash_script.script;
+
+      //   if (last_lookout === null){
+      //     this.cache.put(curr_bash_script.lookout, 1, options.lookout_execution_delay, async (key, value) => {
+      //       console.info(`Script of "${key}" was stacked ${value} times before execution!`);
+      //       this.print_and_execute(lookout_script, options.env);
+      //     });
+      //   }else{
+      //     this.cache.del(curr_bash_script.lookout);
+      //     this.cache.put(curr_bash_script.lookout, last_lookout+1, options.lookout_execution_delay, async (key, value) => {
+      //       console.info(`Script of "${key}" was stacked ${value} times before execution!`);
+      //       this.print_and_execute(lookout_script, options.env);
+      //     });
+      //   }
+      //   console.info(`\nLooking out for another script with key "${curr_bash_script.lookout}"`);
+      //   console.info(`If none is provided in ${(options.lookout_execution_delay/60000).toFixed(2)} minutes I will execute the script...\n`);
+      // }else{
+      //   await this.print_and_execute(curr_bash_script, options.env);
+      // }
+    }
+  }
+
   async print_and_execute(script, env) {
 
     let result;
@@ -127,7 +187,7 @@ class Server {
 
     if (script.startsWith('cd')) {
       let path = script.split(" ")[1];
-      console.log(`<----- [Change Directory to ${current_directory}/${path}] ${script} ------>`);
+      console.log(`\n<----- [Change Directory to ${current_directory}/${path}] ${script} ------>\n`);
       this.shell.cd(`${current_directory}/${path}`);
     } else {
       try {

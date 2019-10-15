@@ -1,7 +1,7 @@
 let svhook = require('./../index');
 
 /* SIMULATION 1 */
-// svhook.server().hook();
+svhook.server().hook();
 
 /* SIMULATION 2 */
 // svhook.server({ port: 2000 }).hook({
@@ -96,4 +96,5 @@ let svhook = require('./../index');
 //       }
 //     ]
 //   });
+
 
