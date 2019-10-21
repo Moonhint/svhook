@@ -49,9 +49,9 @@ export class Server {
   outlooking_for_queue(){
     if (this.execution_queue.length > 0){
       let queue_item = this.execution_queue.shift();
-      let lock = this.cache.get(`lock-${queue_item.path}`);
+      let lock = this.cache.get(`lock-deployment`);
       if (lock){
-        console.log(`\n<----- REQUEUE ${queue_item.path} again because it is still locked ----->\n`);
+        console.log(`\n<----- REQUEUE ${queue_item.path} again because deployment it is still in lockdown ----->\n`);
         this.execution_queue.unshift(queue_item);
       }else{
         console.log(`\n<----- UNQUEUE ${queue_item.path} and executing ----->\n`)
@@ -141,7 +141,7 @@ export class Server {
 
   async run_instructions(instuctions, path, options){
 
-    this.cache.put(`lock-${path}`, true);
+    this.cache.put(`lock-deployment`, true);
     console.log(`\n<----- [Start Running Instruction] for: ${path} ------>\n`);
 
     for (var i = 0; i < instuctions.length; i++) {
@@ -151,7 +151,7 @@ export class Server {
       
       if (i === instuctions.length-1){
         console.log(`\n<----- [Finish Running Instruction] for: ${path} ------>\n`);
-        this.cache.put(`lock-${path}`, false);
+        this.cache.put(`lock-deployment`, false);
 
         console.log(`\n<----- [Reset Directory] to: ${this.svhook_dir} ------>\n`);
         this.shell.cd(this.svhook_dir);
