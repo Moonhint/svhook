@@ -104,10 +104,10 @@ export class Server {
                 console.log(`<----- [Ignore Execute] reason: not eligible branch ------>`);
               }
             }
-
+            
             if (!ignore_execution) {
 
-              if (this.cache.get(`lock-${req.route.path}`)){
+              if (this.cache.get(`lock-deployment`)){
                 this.execution_queue.push({
                   path: req.route.path,
                   instructions: bash_scripts,
